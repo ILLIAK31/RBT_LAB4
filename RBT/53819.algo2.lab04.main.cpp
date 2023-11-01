@@ -30,7 +30,7 @@ public:
 	Node<T>* parent = nullptr;
 	Node<T>* left = nullptr;
 	Node<T>* right = nullptr;
-	bool red_black;
+	bool red_black{ true };
 	int ID{ 0 };
 };
 
@@ -56,24 +56,24 @@ RBT<T>::~RBT() {}
 template <class T>
 void RBT<T>::Rotate_left(Node<T>* kid, Node<T>* parent)
 {
-	if (kid->right != nullptr)
+	if (parent->right != nullptr)
 	{
-		kid->parent = parent->parent;
-		kid->left = parent;
+		if (parent == this->root)
+			this->root = kid;
 		if (kid->left != nullptr)
 		{
 			parent->right = kid->left;
 			kid->left->parent = parent;
+			parent->left = nullptr;
 		}
 		else if (kid->right != nullptr)
 		{
 			parent->right = kid->right;
-			kid->right->parent = parent;
+			parent->right = nullptr;
 		}
-	}
-	else
-	{
-		Rotate_right(kid, parent);
+		kid->left = parent;
+		kid->parent = parent->parent;
+		parent->parent = kid;
 	}
 }
 
@@ -82,18 +82,20 @@ void RBT<T>::Rotate_right(Node<T>* kid, Node<T>* parent)
 {
 	if (parent->left != nullptr)
 	{
+		if (parent == this->root)
+			this->root = kid;
 		if (kid->right != nullptr)
 		{
 			parent->left = kid->right;
 			kid->right->parent = parent;
 		}
+		else if (kid->left != nullptr)
+		{
+			parent->left = nullptr;
+		}
 		kid->right = parent;
 		kid->parent = parent->parent;
 		parent->parent = kid;
-	}
-	else 
-	{
-		Rotate_left(kid,parent);
 	}
 }
 
@@ -128,6 +130,7 @@ void RBT<T>::Add(T Value, Comporator<T> comporator)
 					node->left = node->right = nullptr;
 					node->value = Value;
 					node->ID = this->Size;
+					node2 = node;
 					break;
 				}
 			}
@@ -144,33 +147,67 @@ void RBT<T>::Add(T Value, Comporator<T> comporator)
 					node->left = node->right = nullptr;
 					node->value = Value;
 					node->ID = this->Size;
+					node2 = node;
 					break;
 				}
 			}
 		}
-		if (this->Size >= 3 && node2->parent->parent->right->red_black == true)
-		{
-			//
-		}
-		else if (this->Size >= 3 && node2->parent->right == nullptr)
-		{
-			//
-		}
-		else if (this->Size >= 3 && node2->parent->left == nullptr)
-		{
-			//
-		}
-		else if (this->Size >= 3 && node2->parent->right == node2 && node2->parent->parent->right == node2->parent)
-		{
-			//
-		}
-		else if (this->Size >= 3 && node2->parent->left == node2 && node2->parent->parent->left == node2->parent)
-		{
-			//
-		}
-		node2 = nullptr;
+		//
+		Node<T>* node3;
+		//
+		node3 = nullptr;
+		delete node3;
+		////
+		//if (node2->parent->parent == this->root)
+		//{
+		//	if (this->Size >= 3 && (node2->parent->parent->right == nullptr || node2->parent->parent->right->red_black == false ) && node2->parent->right == node2 && node2->parent->parent->left == node2->parent)
+		//	{
+		//		Rotate_left(node2->parent, node2->parent->parent);
+		//	}
+		//	else if (this->Size >= 3 && (node2->parent->parent->left == nullptr ||node2->parent->parent->left->red_black == false) && node2->parent->left == node2 && node2->parent->parent->right == node2->parent)
+		//	{
+		//		Rotate_right(node2->parent, node2->parent->parent);
+		//	}
+		//	else if (this->Size >= 3 && (node2->parent->parent->right == nullptr || node2->parent->parent->right->red_black == false) && node2->parent->left == node2 && node2->parent->parent->left == node2->parent)
+		//	{
+		//		Rotate_left(node2->parent, node2->parent->parent);
+		//	}
+		//	else if (this->Size >= 3 && (node2->parent->parent->left == nullptr ||node2->parent->parent->left->red_black == false) && node2->parent->right == node2 && node2->parent->parent->right == node2->parent)
+		//	{
+		//		Rotate_right(node2->parent, node2->parent->parent);
+		//	}
+		//}
+		//else
+		//{
+		//	if (this->Size >= 3 && node2->parent->parent->right->red_black == true)
+		//	{
+		//		node2->parent->red_black = !node2->parent->red_black;
+		//		node2->parent->parent->red_black = !node2->parent->parent->red_black;
+		//		if (node2->parent->parent->right != nullptr)
+		//			node2->parent->parent->right->red_black = !node2->parent->parent->right->red_black;
+		//		else
+		//			node2->parent->parent->left->red_black = !node2->parent->parent->left->red_black;
+		//	}
+		//	else if (this->Size >= 3 && (node2->parent->parent->right->red_black == false || node2->parent->parent->right == nullptr) && node2->parent->right == node2 && node2->parent->parent->left == node2->parent)
+		//	{
+		//		Rotate_left(node2->parent, node2->parent->parent);
+		//	}
+		//	else if (this->Size >= 3 && (node2->parent->parent->left->red_black == false || node2->parent->parent->left == nullptr) && node2->parent->left == node2 && node2->parent->parent->right == node2->parent)
+		//	{
+		//		Rotate_right(node2->parent->parent, node2->parent);
+		//	}
+		//	else if (this->Size >= 3 && (node2->parent->parent->right->red_black == false || node2->parent->parent->right == nullptr) && node2->parent->left == node2 && node2->parent->parent->left == node2->parent)
+		//	{
+		//		Rotate_left(node2->parent, node2->parent->parent);
+		//	}
+		//	else if (this->Size >= 3 && (node2->parent->parent->left->red_black == false || node2->parent->parent->left == nullptr) && node2->parent->right == node2 && node2->parent->parent->right == node2->parent)
+		//	{
+		//		Rotate_right(node2->parent, node2->parent->parent);
+		//	}
+		//}
+		////
+		node2 = node3 = nullptr;
 		delete node2;
-
 	}
 }
 
@@ -178,8 +215,5 @@ int main()
 {
 	RBT<int>* rbt = new RBT<int>();
 	Comporator<int> comporator;
-	rbt->Add(15,comporator);
-	//rbt->Add(5, comporator);
-	//rbt->Add(1, comporator);
     return 0;
 }

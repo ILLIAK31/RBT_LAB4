@@ -603,6 +603,6 @@ int main()
 	rbt->Add(85, comporator);
 	rbt->Add(15, comporator);
 	rbt->Add(70, comporator);
-	rbt->Add(20, comporator); //
+	rbt->Add(20, comporator); // Error
     return 0;
 }

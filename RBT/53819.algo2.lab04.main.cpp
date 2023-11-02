@@ -3,6 +3,7 @@
 // ki53819@zut.edu.pl
 #include <iostream>
 #include <vector>
+#include <string>
 
 template <class T>
 class Comporator
@@ -399,7 +400,19 @@ int RBT<T>::Get_Height()
 template<class T>
 void RBT<T>::Print()
 {
-	//
+	std::cout << "\t| BST |\n" << "\t| Size : " << this->Size << " |\n";
+	std::cout << "\t| Height : " << this->Get_Height() << " |\n";
+	std::vector<Node<T>*> vec;
+	Pre_Order(this->root, vec);
+	for (Node<T>* node : vec)
+	{
+		std::string parent, left, right , color;
+		color = (node->red_black) ? "Red" : "Black";
+		parent = (node->parent == nullptr) ? "NULL" : std::to_string(node->parent->ID);
+		left = (node->left == nullptr) ? "NULL" : std::to_string(node->left->ID);
+		right = (node->right == nullptr) ? "NULL" : std::to_string(node->right->ID);
+		std::cout << "| ID : " << node->ID << " | " << color  << ", p : " << parent << " , l : " << left << " , r : " << right << " | Value : " << node->value << " |\n";
+	}
 }
 
 int main()

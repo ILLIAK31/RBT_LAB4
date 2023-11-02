@@ -596,13 +596,13 @@ void RBT<T>::Print()
 
 int main()
 {
-	// Testing , main , testing func. : a,b,c,d,e,(f),g,(h,i)
+	// Testing , main , testing func. : (f,h,i)
 	RBT<int>* rbt = new RBT<int>();
 	Comporator<int> comporator;
 	rbt->Add(10,comporator);
 	rbt->Add(85, comporator);
 	rbt->Add(15, comporator);
 	rbt->Add(70, comporator);
-	rbt->Add(20, comporator);
+	rbt->Add(20, comporator); //
     return 0;
 }

@@ -66,7 +66,36 @@ RBT<T>::~RBT() {}
 template <class T>
 void RBT<T>::Rotate_left(Node<T>* kid, Node<T>* parent)
 {
-	if (parent->right != nullptr)
+	if (parent->parent->right == parent && parent->right == kid)
+	{
+		if (parent->parent == this->root)
+			this->root = kid->parent;
+		parent->parent->right = parent->left;
+		parent->left = parent->parent;
+		parent->parent = parent->parent->parent;
+		parent->left->parent = parent;
+		parent->red_black = !parent->red_black;
+		parent->parent->red_black = !parent->parent->red_black;
+	}
+	else if (parent->parent->right == parent && parent->left == kid)
+	{
+		//1
+		parent->left = kid->right;
+		kid->right = parent;
+		parent->parent->right = kid;
+		kid->parent = parent->parent;
+		parent->parent = kid;
+		//2
+		if (kid->parent == this->root)
+			this->root = kid;
+		kid->parent->right = kid->left;
+		kid->parent->parent = kid;
+		kid->left = kid->parent;
+		kid->parent = kid->parent->parent;
+		kid->red_black = !kid->red_black;
+		kid->left->red_black = !kid->left;
+	}
+	/*if (parent->right != nullptr)
 	{
 		if (parent == this->root)
 			this->root = kid;
@@ -84,13 +113,42 @@ void RBT<T>::Rotate_left(Node<T>* kid, Node<T>* parent)
 		kid->left = parent;
 		kid->parent = parent->parent;
 		parent->parent = kid;
-	}
+	}*/
 }
 
 template <class T>
 void RBT<T>::Rotate_right(Node<T>* kid, Node<T>* parent)
 {
-	if (parent->left != nullptr)
+	if (parent->parent->left == parent && parent->left == kid)
+	{
+		if (parent->parent == this->root)
+			this->root = kid->parent;
+		parent->parent->left = kid->parent->right;
+		kid->parent->right = parent->parent;
+		kid->parent->parent = parent->parent->parent;
+		parent->parent->parent = kid->parent;
+		parent->red_black = !parent->red_black;
+		parent->right->red_black = !parent->right->red_black;
+	}
+	else if (parent->parent->left == parent && parent->right == kid)
+	{
+		//1
+		parent->parent->left = kid;
+		parent->right = kid->left;
+		kid->left = parent;
+		kid->parent = parent->parent;
+		parent->parent = kid;
+		//2
+		if (kid->parent == this->root)
+			this->root = kid;
+		kid->parent->left = kid->right;
+		kid->right = kid->parent;
+		kid->parent = kid->parent->parent;
+		kid->right->parent = kid;
+		kid->red_black = !kid->red_black;
+		kid->right->red_black = !kid->right->red_black;
+	}
+	/*if (parent->left != nullptr)
 	{
 		if (parent == this->root)
 			this->root = kid;
@@ -106,7 +164,7 @@ void RBT<T>::Rotate_right(Node<T>* kid, Node<T>* parent)
 		kid->right = parent;
 		kid->parent = parent->parent;
 		parent->parent = kid;
-	}
+	}*/
 }
 
 template <class T>
@@ -164,7 +222,128 @@ void RBT<T>::Add(T Value, Comporator<T> comporator)
 		}
 		//
 		Node<T>* node3;
-		//
+		if (this->Size == 3)
+		{
+			if (this->root->left != nullptr && this->root->right != nullptr) {}
+			else if (node2->parent->left == node2 && node2->parent->parent->left == node2->parent)
+			{
+				this->root = node2->parent;
+				node2->parent->right = node2->parent->parent;
+				node2->parent->parent = node2->parent->parent->parent;
+				node2->parent->right->parent = node2->parent;
+				this->root->right->left = nullptr;
+				this->root->left->red_black = this->root->right->red_black = true;
+			}
+			else if (node2->parent->right == node2 && node2->parent->parent->left == node2->parent)
+			{
+				node2->left = this->root->left;
+				node2->right = this->root;
+				this->root->left->parent = node2;
+				this->root->left->right = nullptr;
+				this->root->parent = node2;
+				this->root->left = nullptr;
+				node2->parent = nullptr;
+				this->root = node2;
+				this->root->left->red_black = this->root->right->red_black = true;
+			}
+			else if (node2->parent->right == node2 && node2->parent->parent->right == node2->parent)
+			{
+				node2->parent->left = node2->parent->parent;
+				node2->parent->parent->parent = node2->parent;
+				node2->parent->parent->right = nullptr;
+				node2->parent->parent = nullptr; 
+				this->root = node2->parent;
+				this->root->left->red_black = this->root->right->red_black = true;
+			}
+			else
+			{
+				node2->left = node2->parent->parent;
+				node2->right = node2->parent;
+				node2->parent->left = nullptr;
+				node2->parent->parent->right = nullptr;
+				node2->parent->parent->parent = node2;
+				node2->parent->parent = node2;
+				node2->parent = nullptr;
+				this->root = node2;
+				this->root->left->red_black = this->root->right->red_black = true;
+			}
+		}
+		while (node2 != this->root && node2 != nullptr)
+		{
+			if (node2 == this->root)
+				node2->red_black = false;
+			else
+			{
+				if (node2->parent->red_black == true && node2 != this->root && this->Size >= 4)
+				{
+					if (node2->parent->parent->left == node2->parent)
+					{
+						if (node2->parent->parent->right != nullptr && node2->parent->parent->right->red_black == true)
+						{
+							node2->parent->parent->red_black = true;
+							node2->parent->red_black = node2->parent->parent->right->red_black = false;
+							node2 = node2->parent->parent;
+							continue;
+						}
+						else
+						{
+							Rotate_right(node2, node2->parent);
+							node2 = node2->parent->parent;//
+						}
+					}
+					else if (node2->parent->parent->right == node2->parent)
+					{
+						if (node2->parent->parent->left != nullptr && node2->parent->parent->left->red_black == true)
+						{
+							node2->parent->parent->red_black = true;
+							node2->parent->red_black = node2->parent->parent->left->red_black = false;
+							node2 = node2->parent->parent;
+							continue;
+						}
+						else
+						{
+							Rotate_left(node2, node2->parent);
+							node2 = node2->parent->parent;//
+						}
+					}
+				}
+				else
+					break;
+			}
+		}
+		this->root->red_black = false;
+		//while (node2 != this->root && node2 != nullptr)
+		//{
+		//	if (node2->parent->red_black == false)
+		//	{
+		//		break;
+		//	}
+		//	else
+		//	{
+		//		if (node2->parent->parent->red_black == true)
+		//		{
+		//			node2->parent->red_black = false;
+		//			if (node2->parent->parent != this->root)
+		//				node2->parent->parent->red_black = true;
+		//			if (node2->parent->parent->left == node2->parent)
+		//				node2->parent->parent->right->red_black = false;
+		//			else
+		//				node2->parent->parent->left->red_black = false;
+		//			node2 = node2->parent->parent;
+		//			continue;
+		//		}
+		//		else if (node2->parent->parent->red_black == false)
+		//		{
+		//			if (node2->parent->left == node2)
+		//				Rotate_right(node2->parent, node2->parent->parent); //
+		//			else
+		//				Rotate_left(node2->parent, node2->parent->parent); //
+		//			node2->parent->red_black = !node2->parent->red_black;
+		//			node2->parent->parent->red_black = !node2->parent->parent->red_black;
+		//			node2 = node2->parent->parent;
+		//		}
+		//	}
+		//}
 		node3 = nullptr;
 		delete node3;
 		////
@@ -216,7 +395,7 @@ void RBT<T>::Add(T Value, Comporator<T> comporator)
 		//	}
 		//}
 		////
-		node2 = node3 = nullptr;
+		node2 = nullptr;
 		delete node2;
 	}
 }
@@ -417,8 +596,13 @@ void RBT<T>::Print()
 
 int main()
 {
-	// Testing , main
+	// Testing , main , testing func. : a,b,c,d,e,(f),g,(h,i)
 	RBT<int>* rbt = new RBT<int>();
 	Comporator<int> comporator;
+	rbt->Add(10,comporator);
+	rbt->Add(85, comporator);
+	rbt->Add(15, comporator);
+	rbt->Add(70, comporator);
+	rbt->Add(20, comporator);
     return 0;
 }

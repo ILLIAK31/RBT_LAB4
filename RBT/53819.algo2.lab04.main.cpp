@@ -208,9 +208,9 @@ void RBT<T>::Add(T Value, Comporator<T> comporator)
 		if (node2 == this->root)
 			break;
 	}
-	this->root->red_black = false;
 	node2 = nullptr;
 	delete node2;
+	this->root->red_black = false;
 }
 
 template<class T>

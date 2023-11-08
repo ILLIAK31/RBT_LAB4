@@ -33,6 +33,7 @@ public:
 	Node<T>* left = nullptr;
 	Node<T>* right = nullptr;
 	bool red_black{ true };
+	bool NILL{ false };
 	int ID{ 0 };
 };
 
@@ -66,126 +67,47 @@ RBT<T>::~RBT() {}
 template <class T>
 void RBT<T>::Rotate_left(Node<T>* kid, Node<T>* parent)
 {
-	if (parent->parent->right == parent && parent->right == kid && parent->parent->left == nullptr)
-	{
-		parent->red_black = !parent->red_black;
-		parent->parent->red_black = !parent->parent->red_black;
-		Node<T>* node3 = parent->parent;
-		if (node3->parent != nullptr)
-		{
-			if (node3->parent->left == node3)
-				node3->parent->left = parent;
-			else
-				node3->parent->right = parent;
-		}
-		parent->parent = node3->parent;
-		node3->parent = parent;
-		parent->left = node3;
-		node3->right = nullptr;
-		node3 = nullptr;
-		delete node3;
-	}
-	else if (parent->parent->right == parent && parent->right == kid && parent->parent->left != nullptr)
-	{
-		if (parent->parent == this->root)
-			this->root = kid->parent;
-		parent->parent->right = parent->left;
-		parent->left = parent->parent;
-		parent->parent = parent->parent->parent;
-		parent->left->parent = parent;
-		parent->red_black = !parent->red_black;
-		parent->parent->red_black = !parent->parent->red_black;
-	}
-	else if (parent->parent->right == parent && parent->left == kid)
-	{
-		if (parent->parent != nullptr && parent->parent->parent != nullptr)
-		{
-			if (parent->parent->parent->left == parent->parent)
-				parent->parent->parent->left = kid;
-			else
-				parent->parent->parent->right = kid;
-		}
-		//1
-		parent->left = kid->right;
-		kid->right = parent;
-		parent->parent->right = kid;
-		kid->parent = parent->parent;
-		parent->parent = kid;
-		//2
-		if (kid->parent == this->root)
-			this->root = kid;
-		kid->parent->right = kid->left;
-		kid->left = kid->parent;
-		kid->parent = kid->parent->parent;
-		kid->left->parent = kid;
-		kid->red_black = false;
-		kid->left->red_black = true;
-	}
+	Node<T>* node3 = kid->right;
+	kid->right = node3->left;
+	if (node3->left != nullptr)
+		node3->left->parent = kid;
+	node3->parent = kid->parent;
+	if (kid->parent == nullptr)
+		this->root = node3;
+	else if (kid == kid->parent->left)
+		kid->parent->left = node3;
+	else
+		kid->parent->right = node3;
+	node3->left = kid;
+	kid->parent = node3;
+	node3 = nullptr;
+	delete node3;
 }
 
 template <class T>
 void RBT<T>::Rotate_right(Node<T>* kid, Node<T>* parent)
 {
-	if (parent->parent->left == parent && parent->left == kid && parent->parent->right == nullptr)
-	{
-		parent->red_black = !parent->red_black;
-		parent->parent->red_black = !parent->parent->red_black;
-		Node<T>* node3 = parent->parent;
-		if (node3->parent != nullptr)
-		{
-			if (node3->parent->left == node3)
-				node3->parent->left = parent;
-			else
-				node3->parent->right = parent;
-		}
-		parent->parent = node3->parent;
-		node3->parent = parent;
-		parent->right = node3;
-		node3->left = nullptr;
-		node3 = nullptr;
-		delete node3;
-	}
-	else if (parent->parent->left == parent && parent->left == kid && parent->parent->right != nullptr)
-	{
-		if (parent->parent == this->root)
-			this->root = kid->parent;
-		parent->parent->left = kid->parent->right;
-		kid->parent->right = parent->parent;
-		kid->parent->parent = parent->parent->parent;
-		parent->parent->parent = kid->parent;
-		parent->red_black = !parent->red_black;
-		parent->right->red_black = !parent->right->red_black;
-	}
-	else if (parent->parent->left == parent && parent->right == kid)
-	{
-		if (parent->parent != nullptr)
-		{
-			if (parent->parent->parent->left == parent->parent)
-				parent->parent->parent->left = kid;
-			else
-				parent->parent->parent->right = kid;
-		}
-		//1
-		parent->parent->left = kid;
-		parent->right = kid->left;
-		kid->left = parent;
-		kid->parent = parent->parent;
-		parent->parent = kid;
-		//2
-		if (kid->parent == this->root)
-			this->root = kid;
-		kid->parent->left = kid->right;
-		kid->right = kid->parent;
-		kid->parent = kid->parent->parent;
-		kid->right->parent = kid;
-		kid->red_black = false;
-		kid->right->red_black = true;
-	}
+	Node<T>* node3 = kid->right;
+	kid->left = node3->right;
+	if (node3->right != nullptr)
+		node3->right->parent = kid;
+	node3->parent = kid->parent;
+	if (kid->parent == nullptr)
+		this->root = node3;
+	else if (kid == kid->parent->right)
+		kid->parent->right = node3;
+	else
+		kid->parent->left = node3;
+	node3->right = kid;
+	kid->parent = node3;
+	node3 = nullptr;
+	delete node3;
 }
 
 template <class T>
 void RBT<T>::Add(T Value, Comporator<T> comporator)
 {
+	Node<T>* node2 = this->root;
 	if (this->Size == 0)
 	{
 		++this->Size;
@@ -195,10 +117,17 @@ void RBT<T>::Add(T Value, Comporator<T> comporator)
 		root->parent = root->left = root->right = nullptr;
 		root->ID = this->Size;
 		root->red_black = false;
+		Node<T>* node2 = new Node<T>();
+		Node<T>* node3 = new Node<T>();
+		node2->NILL = node3->NILL = true;
+		this->root->left = node2;
+		this->root->right = node3;
+		node2 = node3 = nullptr;
+		delete node2;
+		delete node3;
 	}
 	else
 	{
-		Node<T>* node2 = this->root;
 		while (true)
 		{
 			if (comporator(Value, node2->value))
@@ -211,10 +140,17 @@ void RBT<T>::Add(T Value, Comporator<T> comporator)
 					Node<T>* node = new Node<T>();
 					node->parent = node2;
 					node2->right = node;
-					node->left = node->right = nullptr;
 					node->value = Value;
 					node->ID = this->Size;
 					node2 = node;
+					Node<T>* node3 = new Node<T>();
+					Node<T>* node4 = new Node<T>();
+					node->left = node3;
+					node->right = node4;
+					node4->NILL = node3->NILL = true;
+					node3 = node4 = nullptr;
+					delete node3;
+					delete node4;
 					break;
 				}
 			}
@@ -232,113 +168,65 @@ void RBT<T>::Add(T Value, Comporator<T> comporator)
 					node->value = Value;
 					node->ID = this->Size;
 					node2 = node;
+					Node<T>* node3 = new Node<T>();
+					Node<T>* node4 = new Node<T>();
+					node->left = node3;
+					node->right = node4;
+					node4->NILL = node3->NILL = true;
+					node3 = node4 = nullptr;
+					delete node3;
+					delete node4;
 					break;
 				}
 			}
 		}
-		//
-		Node<T>* node3;
-		if (this->Size == 3)
+	}
+	while (node2 != this->root && node2 != nullptr && node2->parent->red_black == true)
+	{
+		if (node2->parent->parent->left == node2->parent)
 		{
-			if (this->root->left != nullptr && this->root->right != nullptr) {}
-			else if (node2->parent->left == node2 && node2->parent->parent->left == node2->parent)
+			if (node2->parent->parent->right != nullptr && node2->parent->parent->right->red_black == true)
 			{
-				this->root = node2->parent;
-				node2->parent->right = node2->parent->parent;
-				node2->parent->parent = node2->parent->parent->parent;
-				node2->parent->right->parent = node2->parent;
-				this->root->right->left = nullptr;
-				this->root->left->red_black = this->root->right->red_black = true;
-			}
-			else if (node2->parent->right == node2 && node2->parent->parent->left == node2->parent)
-			{
-				node2->left = this->root->left;
-				node2->right = this->root;
-				this->root->left->parent = node2;
-				this->root->left->right = nullptr;
-				this->root->parent = node2;
-				this->root->left = nullptr;
-				node2->parent = nullptr;
-				this->root = node2;
-				this->root->left->red_black = this->root->right->red_black = true;
-			}
-			else if (node2->parent->right == node2 && node2->parent->parent->right == node2->parent)
-			{
-				node2->parent->left = node2->parent->parent;
-				node2->parent->parent->parent = node2->parent;
-				node2->parent->parent->right = nullptr;
-				node2->parent->parent = nullptr; 
-				this->root = node2->parent;
-				this->root->left->red_black = this->root->right->red_black = true;
+				node2->parent->parent->red_black = true;
+				node2->parent->red_black = node2->parent->parent->right->red_black = false;
+				node2 = node2->parent->parent;
 			}
 			else
 			{
-				node2->left = node2->parent->parent;
-				node2->right = node2->parent;
-				node2->parent->left = nullptr;
-				node2->parent->parent->right = nullptr;
-				node2->parent->parent->parent = node2;
-				node2->parent->parent = node2;
-				node2->parent = nullptr;
-				this->root = node2;
-				this->root->left->red_black = this->root->right->red_black = true;
-			}
-		}
-		while (node2 != this->root && node2 != nullptr)
-		{
-			if (node2 == this->root)
-				node2->red_black = false;
-			else
-			{
-				if (node2->parent->red_black == true && node2 != this->root && this->Size >= 4)
+				if (node2->parent->right == node2)
 				{
-					if (node2->parent->parent->left == node2->parent)
-					{
-						if (node2->parent->parent->right != nullptr && node2->parent->parent->right->red_black == true)
-						{
-							node2->parent->parent->red_black = true;
-							node2->parent->red_black = node2->parent->parent->right->red_black = false;
-							node2 = node2->parent->parent;
-							continue;
-						}
-						else
-						{
-							Rotate_right(node2, node2->parent);
-							if (node2->parent != nullptr)
-								node2 = node2->parent->parent;
-							else
-								break;
-						}
-					}
-					else if (node2->parent->parent->right == node2->parent)
-					{
-						if (node2->parent->parent->left != nullptr && node2->parent->parent->left->red_black == true)
-						{
-							node2->parent->parent->red_black = true;
-							node2->parent->red_black = node2->parent->parent->left->red_black = false;
-							node2 = node2->parent->parent;
-							continue;
-						}
-						else
-						{
-							Rotate_left(node2, node2->parent);
-							if (node2->parent != nullptr)
-								node2 = node2->parent->parent;
-							else
-								break;
-						}
-					}
+					Rotate_left(node2, node2->parent); 
+					node2 = node2->parent;
 				}
-				else
-					break;
+			    node2->parent->parent->red_black = true;
+				node2->parent->red_black = false;
+				Rotate_right(node2->parent->parent, node2->parent->parent->parent); 
+			}
+		}
+		else
+		{
+			if (node2->parent->parent->left != nullptr && node2->parent->parent->left->red_black == true)
+			{
+				node2->parent->parent->red_black = true;
+				node2->parent->red_black = node2->parent->parent->left->red_black = false;
+				node2 = node2->parent->parent;
+			}
+			else
+			{
+				if (node2->parent->left == node2)
+				{
+					Rotate_right(node2, node2->parent); 
+				}
+				node2->parent->parent->red_black = true;
+				node2->parent->red_black = false;
+				Rotate_left(node2, node2->parent); 
+				node2 = node2->parent;
 			}
 		}
 		this->root->red_black = false;
-		node3 = nullptr;
-		delete node3;
-		node2 = nullptr;
-		delete node2;
 	}
+	node2 = nullptr;
+	delete node2;
 }
 
 template<class T>
@@ -541,13 +429,13 @@ int main()
 	RBT<int>* rbt = new RBT<int>();
 	Comporator<int> comporator;
 	rbt->Add(10,comporator);
-	rbt->Add(85, comporator);
-	rbt->Add(15, comporator);
-	rbt->Add(70, comporator);
-	rbt->Add(20, comporator);
-	rbt->Add(60, comporator);
-	rbt->Add(30, comporator); 
-	rbt->Add(50, comporator); // Error
+	//rbt->Add(85, comporator);
+	//rbt->Add(15, comporator);
+	//rbt->Add(70, comporator);
+	//rbt->Add(20, comporator);
+	//rbt->Add(60, comporator);
+	//rbt->Add(30, comporator); 
+	//rbt->Add(50, comporator);
 	//rbt->Add(65, comporator);
 	//rbt->Add(80, comporator);
 	//rbt->Add(90, comporator);

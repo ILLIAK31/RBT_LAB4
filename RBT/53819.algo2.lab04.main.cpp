@@ -409,7 +409,7 @@ void RBT<T>::Print()
 
 int main()
 {
-	// Testing , main
+	// Testing , main , testing functions without adding
 	RBT<int>* rbt = new RBT<int>();
 	Comporator<int> comporator;
 	rbt->Add(10,comporator);
@@ -419,13 +419,13 @@ int main()
 	rbt->Add(20, comporator);
 	rbt->Add(60, comporator);
 	rbt->Add(30, comporator); 
-	//rbt->Add(50, comporator);
-	//rbt->Add(65, comporator);
-	//rbt->Add(80, comporator);
-	//rbt->Add(90, comporator);
-	//rbt->Add(40, comporator);
-	//rbt->Add(5, comporator);
-	//rbt->Add(55, comporator);
+	rbt->Add(50, comporator);
+	rbt->Add(65, comporator);
+	rbt->Add(80, comporator);
+	rbt->Add(90, comporator);
+	rbt->Add(40, comporator);
+	rbt->Add(5, comporator);
+	rbt->Add(55, comporator);
 	rbt->Print();
     return 0;
 }

@@ -67,13 +67,13 @@ template <class T>
 void RBT<T>::Rotate_left(Node<T>* kid, Node<T>* parent)
 {
 	Node<T>* nd3 = kid->right;
-	if (nd3 != nullptr)
+	if (nd3 != NULL)
 	{
 		kid->right = nd3->left; // back to node which we add in left
-		if (nd3->left != nullptr)
+		if (nd3->left != NULL)
 			nd3->left->parent = kid;
 		nd3->parent = kid->parent;
-		if (kid->parent == nullptr) // check pos opt1
+		if (kid->parent == NULL) // check pos opt1
 			this->root = nd3; // root is node
 		else if (kid != kid->parent->left) // opt2
 			kid->parent->right = nd3; // n.r
@@ -82,7 +82,7 @@ void RBT<T>::Rotate_left(Node<T>* kid, Node<T>* parent)
 		nd3->left = kid;
 		kid->parent = nd3;
 	}
-	nd3 = nullptr;
+	nd3 = NULL;
 	delete nd3;
 }
 
@@ -90,13 +90,13 @@ template <class T>
 void RBT<T>::Rotate_right(Node<T>* kid, Node<T>* parent)
 {
 	Node<T>* nd3 = kid->left;
-	if (nd3 != nullptr)
+	if (nd3 != NULL)
 	{
 		kid->left = nd3->right; // back to node which we add in right
-		if (nd3->right != nullptr)
+		if (nd3->right != NULL)
 			nd3->right->parent = kid;
 		nd3->parent = kid->parent;
-		if (kid->parent == nullptr) // check pos opt1
+		if (kid->parent == NULL) // check pos opt1
 			this->root = nd3; // root is node
 		else if (kid != kid->parent->right) // opt2
 			kid->parent->left = nd3; // n.l
@@ -105,7 +105,7 @@ void RBT<T>::Rotate_right(Node<T>* kid, Node<T>* parent)
 		nd3->right = kid;
 		kid->parent = nd3;
 	}
-	nd3 = nullptr;
+	nd3 = NULL;
 	delete nd3;
 }
 
@@ -163,14 +163,14 @@ void RBT<T>::Add(T Value, Comporator<T> comporator)
 			}
 		}
 	}
-	while (node2 != this->root && node2 != nullptr && node2->parent->red_black == true) // part 2
+	while (node2 != this->root && node2 != NULL && node2->parent->red_black == 1) // part 2
 	{
 		if (node2->parent->parent->right == node2->parent) // if path is right
 		{
-			if (node2->parent->parent->left != nullptr && node2->parent->parent->left->red_black == true) // option 1 with path to left and color red
+			if (node2->parent->parent->left != NULL && node2->parent->parent->left->red_black == 1) // option 1 with path to left and color red
 			{
-				node2->parent->parent->red_black = true; //change color to red
-				node2->parent->red_black = node2->parent->parent->left->red_black = false; // color to black
+				node2->parent->parent->red_black = 1; //change color to red
+				node2->parent->red_black = node2->parent->parent->left->red_black = 0; // color to black
 				node2 = node2->parent->parent; // back 2 time
 			}
 			else // else option
@@ -180,17 +180,17 @@ void RBT<T>::Add(T Value, Comporator<T> comporator)
 					node2 = node2->parent; // back 1 time
 					Rotate_right(node2, node2->parent); // rot.r  
 				}
-				node2->parent->parent->red_black = true; // color to red
-				node2->parent->red_black = false; // color to black
+				node2->parent->parent->red_black = 1; // color to red
+				node2->parent->red_black = 0; // color to black
 				Rotate_left(node2->parent->parent, node2->parent->parent->parent); //rot.l 
 			}
 		}
 		else // path is left
 		{
-			if (node2->parent->parent->right != nullptr && node2->parent->parent->right->red_black == true) // option 1 with path to right and color red
+			if (node2->parent->parent->right != NULL && node2->parent->parent->right->red_black == 1) // option 1 with path to right and color red
 			{
-				node2->parent->parent->red_black = true; // color to red
-				node2->parent->red_black = node2->parent->parent->right->red_black = false; // color to black
+				node2->parent->parent->red_black = 1; // color to red
+				node2->parent->red_black = node2->parent->parent->right->red_black = 0; // color to black
 				node2 = node2->parent->parent; // back 2 time
 			}
 			else // else option
@@ -200,8 +200,8 @@ void RBT<T>::Add(T Value, Comporator<T> comporator)
 					node2 = node2->parent; // back 1 time
 					Rotate_left(node2, node2->parent); // rot.l
 				}
-				node2->parent->parent->red_black = true; // color to red
-				node2->parent->red_black = false; // color to black
+				node2->parent->parent->red_black = 1; // color to red
+				node2->parent->red_black = 0; // color to black
 				Rotate_right(node2->parent->parent, node2->parent->parent->parent); // rot.r 
 			}
 		}
@@ -210,7 +210,7 @@ void RBT<T>::Add(T Value, Comporator<T> comporator)
 	}
 	node2 = nullptr;
 	delete node2;
-	this->root->red_black = false; // root always black
+	this->root->red_black = 0; // root always black
 }
 
 template<class T>
@@ -238,6 +238,7 @@ Node<T>* RBT<T>::Search(T Value, Comporator<T> comporator)
 	}
 	node2 = nullptr;
 	delete node2;
+	std::cout << "Value was not founded\n";
 	return nullptr;
 }
 

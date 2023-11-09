@@ -72,13 +72,13 @@ void RBT<T>::Rotate_left(Node<T>* kid, Node<T>* parent)
 		kid->right = nd3->left; // back to node which we add in left
 		if (nd3->left != NULL)
 			nd3->left->parent = kid;
-		nd3->parent = kid->parent;
-		if (kid->parent == NULL) // check pos opt1
+		nd3->parent = parent;
+		if (parent == NULL) // check pos opt1
 			this->root = nd3; // root is node
-		else if (kid != kid->parent->left) // opt2
-			kid->parent->right = nd3; // n.r
+		else if (kid != parent->left) // opt2
+			parent->right = nd3; // n.r
 		else // opt3
-			kid->parent->left = nd3; // n.l
+			parent->left = nd3; // n.l
 		nd3->left = kid;
 		kid->parent = nd3;
 	}
@@ -95,13 +95,13 @@ void RBT<T>::Rotate_right(Node<T>* kid, Node<T>* parent)
 		kid->left = nd3->right; // back to node which we add in right
 		if (nd3->right != NULL)
 			nd3->right->parent = kid;
-		nd3->parent = kid->parent;
-		if (kid->parent == NULL) // check pos opt1
+		nd3->parent = parent;
+		if (parent == NULL) // check pos opt1
 			this->root = nd3; // root is node
-		else if (kid != kid->parent->right) // opt2
-			kid->parent->left = nd3; // n.l
+		else if (kid != parent->right) // opt2
+			parent->left = nd3; // n.l
 		else // opt3
-			kid->parent->right = nd3; // n.r
+			parent->right = nd3; // n.r
 		nd3->right = kid;
 		kid->parent = nd3;
 	}

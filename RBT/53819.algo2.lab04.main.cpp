@@ -410,7 +410,7 @@ void RBT<T>::Print()
 
 int main()
 {
-	// Testing main, main , testing functions without adding
+	// Testing main, main 
 	RBT<int>* rbt = new RBT<int>();
 	Comporator<int> comporator;
 	rbt->Add(10,comporator);

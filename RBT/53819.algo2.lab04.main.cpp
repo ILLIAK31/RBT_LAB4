@@ -66,47 +66,47 @@ RBT<T>::~RBT() {}
 template <class T>
 void RBT<T>::Rotate_left(Node<T>* kid, Node<T>* parent)
 {
-	Node<T>* nоdе3 = kid->right;
-	if (nоdе3 != nullptr)
+	Node<T>* nd3 = kid->right;
+	if (nd3 != nullptr)
 	{
-		kid->right = nоdе3->left; // back to node which we add in left
-		if (nоdе3->left != nullptr)
-			nоdе3->left->parent = kid;
-		nоdе3->parent = kid->parent;
+		kid->right = nd3->left; // back to node which we add in left
+		if (nd3->left != nullptr)
+			nd3->left->parent = kid;
+		nd3->parent = kid->parent;
 		if (kid->parent == nullptr) // check pos opt1
-			this->root = nоdе3; // root is node
+			this->root = nd3; // root is node
 		else if (kid != kid->parent->left) // opt2
-			kid->parent->right = nоdе3; // n.r
+			kid->parent->right = nd3; // n.r
 		else // opt3
-			kid->parent->left = nоdе3; // n.l
-		nоdе3->left = kid;
-		kid->parent = nоdе3;
+			kid->parent->left = nd3; // n.l
+		nd3->left = kid;
+		kid->parent = nd3;
 	}
-	nоdе3 = nullptr;
-	delete nоdе3;
+	nd3 = nullptr;
+	delete nd3;
 }
 
 template <class T>
 void RBT<T>::Rotate_right(Node<T>* kid, Node<T>* parent)
 {
-	Node<T>* nоdе3 = kid->left;
-	if (nоdе3 != nullptr)
+	Node<T>* nd3 = kid->left;
+	if (nd3 != nullptr)
 	{
-		kid->left = nоdе3->right; // back to node which we add in right
-		if (nоdе3->right != nullptr)
-			nоdе3->right->parent = kid;
-		nоdе3->parent = kid->parent;
+		kid->left = nd3->right; // back to node which we add in right
+		if (nd3->right != nullptr)
+			nd3->right->parent = kid;
+		nd3->parent = kid->parent;
 		if (kid->parent == nullptr) // check pos opt1
-			this->root = nоdе3; // root is node
+			this->root = nd3; // root is node
 		else if (kid != kid->parent->right) // opt2
-			kid->parent->left = nоdе3; // n.l
+			kid->parent->left = nd3; // n.l
 		else // opt3
-			kid->parent->right = nоdе3; // n.r
-		nоdе3->right = kid;
-		kid->parent = nоdе3;
+			kid->parent->right = nd3; // n.r
+		nd3->right = kid;
+		kid->parent = nd3;
 	}
-	nоdе3 = nullptr;
-	delete nоdе3;
+	nd3 = nullptr;
+	delete nd3;
 }
 
 template <class T>

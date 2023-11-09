@@ -1,4 +1,4 @@
-﻿// ALGO2 IS1 224B LAB03
+﻿// ALGO2 IS1 224B LAB04
 // ILLIA KARMAZIN
 // ki53819@zut.edu.pl
 #include <iostream>

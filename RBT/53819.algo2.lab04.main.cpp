@@ -3,6 +3,7 @@
 // ki53819@zut.edu.pl
 #include <iostream>
 #include <vector>
+#include <random>
 #include <string>
 
 template <class T>
@@ -238,7 +239,6 @@ Node<T>* RBT<T>::Search(T Value, Comporator<T> comporator)
 	}
 	node2 = nullptr;
 	delete node2;
-	std::cout << "Value was not founded\n";
 	return nullptr;
 }
 
@@ -410,23 +410,44 @@ void RBT<T>::Print()
 
 int main()
 {
-	// Testing main, main 
 	RBT<int>* rbt = new RBT<int>();
 	Comporator<int> comporator;
-	rbt->Add(10,comporator);
-	rbt->Add(85, comporator);
-	rbt->Add(15, comporator);
-	rbt->Add(70, comporator);
-	rbt->Add(20, comporator);
-	rbt->Add(60, comporator);
-	rbt->Add(30, comporator); 
-	rbt->Add(50, comporator);
-	rbt->Add(65, comporator);
-	rbt->Add(80, comporator);
-	rbt->Add(90, comporator);
-	rbt->Add(40, comporator);
-	rbt->Add(5, comporator);
-	rbt->Add(55, comporator);
+	std::mt19937 RAND(std::random_device{}());
+	std::uniform_int_distribution<int> values(0, RAND_MAX);
+	int value, ht{ 0 }, avr{ 0 };
+	clock_t timer1, timer2, timer3, timer4;
+	timer1 = clock();
+	for (int index = 0; index < 10000; ++index)
+	{
+		value = values(RAND);
+		timer3 = clock();
+		rbt->Add(value, comporator);
+		timer4 = clock();
+		avr += (timer4 - timer3) / (double)CLOCKS_PER_SEC;
+	}
+	timer2 = clock();
+	avr /= rbt->Size;
+	avr *= 1000;
 	rbt->Print();
+	std::cout << "| Full time : " << ((timer2 - timer1) / ((double)CLOCKS_PER_SEC)) << " s | Time per 1 obj : " << avr << " ms |\n";
+	avr = 0;
+	timer1 = clock();
+	for (int index = 0; index < 1000; ++index)
+	{
+		value = values(RAND);
+		timer3 = clock();
+		auto fin = rbt->Search(value, comporator);
+		timer4 = clock();
+		if (fin != nullptr)
+			ht += 1;
+		fin = nullptr;
+		avr += (timer4 - timer3) / (double)CLOCKS_PER_SEC;
+	}
+	timer2 = clock();
+	avr /= rbt->Size;
+	avr *= 1000;
+	std::cout << "| Full time : " << ((timer2 - timer1) / ((double)CLOCKS_PER_SEC)) << " s | Time per 1 obj : " << avr << " ms | Hits : " << ht << " |\n";
+	rbt->Clear();
+	delete rbt;
     return 0;
 }
